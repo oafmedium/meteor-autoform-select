@@ -25,10 +25,9 @@ AutoForm.addInputType 'oafSelect',
       val
   contextAdjust: (context) ->
     context
-Template.afSelectize.helpers
-Template.afSelectize.events
 
-Template.afSelectize.onRendered ->
-Template.afSelectize.onDestroyed ->
+Template.afOafSelect.helpers
+Template.afOafSelect.events
 
-AutoForm.Selectize.setDefaults = (options) ->
+Template.afOafSelect.onRendered ->
+Template.afOafSelect.onDestroyed ->

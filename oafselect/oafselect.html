@@ -1,0 +1,15 @@
+<template name="afOafSelect">
+  <div class="oafselect-container">
+    <div class="oafselect-selected">
+      {{#each selectedItems}}
+        {{> afOafSelect_selectedItem}}
+      {{/each}}
+    </div>
+    <input type="text" class="oafselect-input" />
+    <div class="oafselect-dropdown">
+      {{#each dropdownItems}}
+        {{> afOafSelect_dropdownItem}}
+      {{/each}}
+    </div>
+  </div>
+</template>
