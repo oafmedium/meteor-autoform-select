@@ -1,0 +1,14 @@
+<template name="form">
+  {{> quickForm collection="Posts" type="insert" id="newPost"}}
+  <ul>
+    {{#each posts}}
+      <li>
+        {{name}}: {{author}} ({{#each tags}}{{this}}, {{/each}})
+      </li>
+    {{else}}
+      <li>
+        no posts
+      </li>
+    {{/each}}
+  </ul>
+</template>
