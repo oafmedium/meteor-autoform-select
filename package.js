@@ -17,7 +17,12 @@ Package.onUse(function(api) {
   api.use('blaze@2.0.0');
   api.use('aldeed:autoform@5.0.0');
   api.addFiles([
-    'autoform-select.html',
-    'autoform-select.coffee',
+    'oafselect/oafselect.html',
+    'oafselect/oafselect.coffee',
+
+    'oafselect/selected_item/selected_item.html',
+    'oafselect/selected_item/selected_item.coffee',
+    'oafselect/dropdown_item/dropdown_item.html',
+    'oafselect/dropdown_item/dropdown_item.html',
   ],'client');
 });
