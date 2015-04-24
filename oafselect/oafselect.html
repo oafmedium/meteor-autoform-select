@@ -1,15 +1,26 @@
 <template name="afOafSelect">
-  <div class="oafselect-container">
-    <div class="oafselect-selected">
-      {{#each selectedItems}}
-        {{> afOafSelect_selectedItem}}
-      {{/each}}
+  <div class="oafselect-container" {{this.atts}}>
+    <div class="oafselect-input-wrapper">
+      <div class="oafselect-selected">
+        {{#each selectedItems}}
+          <div class="oafselect-selected-item">
+            {{> afOafSelect_selectedItem template=options.templates.selectedItem}}
+          </div>
+        {{/each}}
+      </div>
+      <input type="text" class="oafselect-input" />
     </div>
-    <input type="text" class="oafselect-input" />
     <div class="oafselect-dropdown">
       {{#each dropdownItems}}
-        {{> afOafSelect_dropdownItem}}
+        <div class="oafselect-dropdown-item">
+          {{> afOafSelect_dropdownItem template=options.templates.dropdownItem}}
+        </div>
       {{/each}}
+      {{#if options.create}}
+        <div class="oafselect-dropdown-item create">
+          <span class="text">{{options.createText}}</span> <span class="value">{{searchValue}}</span>
+        </div>
+      {{/if}}
     </div>
   </div>
 </template>
