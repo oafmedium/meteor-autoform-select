@@ -13,16 +13,19 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.1.0.2');
   api.use('coffeescript');
+  api.use('stylus');
+  api.use('reactive-var');
   api.use('templating@1.0.0');
   api.use('blaze@2.0.0');
   api.use('aldeed:autoform@5.0.0');
   api.addFiles([
     'oafselect/oafselect.html',
     'oafselect/oafselect.coffee',
+    'oafselect/oafselect.styl',
 
     'oafselect/selected_item/selected_item.html',
     'oafselect/selected_item/selected_item.coffee',
     'oafselect/dropdown_item/dropdown_item.html',
-    'oafselect/dropdown_item/dropdown_item.html',
+    'oafselect/dropdown_item/dropdown_item.coffee',
   ],'client');
 });

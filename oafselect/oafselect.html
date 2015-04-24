@@ -1,10 +1,10 @@
 <template name="afOafSelect">
-  <div class="oafselect-container" {{this.atts}}>
+  <div class="oafselect-container" {{atts}}>
     <div class="oafselect-input-wrapper">
       <div class="oafselect-selected">
         {{#each selectedItems}}
-          <div class="oafselect-selected-item">
-            {{> afOafSelect_selectedItem template=options.templates.selectedItem}}
+          <div class="oafselect-selected-item" data-label="{{label}}" data-value="{{value}}">
+            {{> afOafSelect_selectedItem template=options.templates.selectedItem item=this}}
           </div>
         {{/each}}
       </div>
@@ -12,14 +12,16 @@
     </div>
     <div class="oafselect-dropdown">
       {{#each dropdownItems}}
-        <div class="oafselect-dropdown-item">
-          {{> afOafSelect_dropdownItem template=options.templates.dropdownItem}}
+        <div class="oafselect-dropdown-item" data-label="{{label}}" data-value="{{value}}">
+          {{> afOafSelect_dropdownItem template=options.templates.dropdownItem item=this}}
         </div>
       {{/each}}
       {{#if options.create}}
-        <div class="oafselect-dropdown-item create">
-          <span class="text">{{options.createText}}</span> <span class="value">{{searchValue}}</span>
-        </div>
+        {{#if searchValue}}
+          <div class="oafselect-dropdown-item create">
+            <span class="text">{{options.createText}}</span> <span class="value">{{searchValue}}</span>
+          </div>
+        {{/if}}
       {{/if}}
     </div>
   </div>
