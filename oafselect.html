@@ -1,0 +1,34 @@
+<template name="afOafSelect">
+  <div class="oafselect-container" {{atts}}>
+    <div class="oafselect-input-wrapper {{#if showDropdown}}dropdown-visible{{/if}}">
+      {{#each selectedItems}}
+        <div class="oafselect-selected-item" data-label="{{label}}" data-value="{{value}}">
+          {{#if options.templates.selectedItem}}
+            {{> UI.dynamic template=template data=this}}
+          {{else}}
+            <span class="name">{{label}}</span> <a href="" class="remove">&times;</a>
+          {{/if}}
+        </div>
+      {{/each}}
+      <input type="text" class="oafselect-input" />
+    </div>
+    <div class="oafselect-dropdown {{#if showDropdown}}visible{{/if}}">
+      {{#each dropdownItems}}
+        <div class="oafselect-dropdown-item" data-label="{{label}}" data-value="{{value}}">
+          {{#if options.templates.dropdownItem}}
+            {{> UI.dynamic template=template data=this}}
+          {{else}}
+            <span class="name">{{label}}</span>
+          {{/if}}
+        </div>
+      {{/each}}
+      {{#if options.create}}
+        {{#if searchValue}}
+          <div class="oafselect-dropdown-item create">
+            <span class="text">{{options.createText}}</span> <span class="value">{{searchValue}}</span>
+          </div>
+        {{/if}}
+      {{/if}}
+    </div>
+  </div>
+</template>

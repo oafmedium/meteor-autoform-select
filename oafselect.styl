@@ -1,0 +1,41 @@
+@import "nib"
+
+.oafselect-container
+  width 300px
+  position relative
+  .oafselect-input-wrapper
+    cursor text
+    border 1px solid gray
+    border-radius 4px
+    &.dropdown-visible
+      border-bottom 0
+      border-bottom-left-radius 0
+      border-bottom-right-radius 0
+    .oafselect-selected-item
+      display inline-block
+    .oafselect-input
+      border 0
+      padding 0
+      margin 0
+      outline 0
+  .oafselect-dropdown
+    display none
+    position absolute
+    background-color #fefefe
+    width 100%
+    max-height 150px
+    overflow auto
+    border 1px solid gray
+    border-radius 4px
+    border-top 0
+    border-top-left-radius 0
+    border-top-right-radius 0
+    z-index 1
+    &.visible
+      display block
+
+.oafselect-container.dropdown-visible
+  // .oafselect-input-wrapper
+
+  .oafselect-dropdown
+    display block
