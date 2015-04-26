@@ -21,6 +21,7 @@ Posts.attachSchema
     optional: true
     autoform:
       type: 'oafSelect'
+      multiple: true
       options: ->
         Tags.find().map (tag) ->
           label: tag.name

@@ -52,6 +52,8 @@ Template.afOafSelect.events
       item.value is target.attr('data-value')
   'click .oafselect-dropdown-item': (event, template) ->
     current = template.selectedItems.get()
+    atts = template.data.atts
+    current = [] unless atts.multiple
     current.push
       label: $(event.currentTarget).attr 'data-label'
       value: $(event.currentTarget).attr 'data-value'
