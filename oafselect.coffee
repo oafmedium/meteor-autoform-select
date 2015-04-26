@@ -1,6 +1,16 @@
 AutoForm.addInputType 'oafSelect',
   template: 'afOafSelect'
   valueOut: ->
+    view = Blaze.getView @get(0)
+    instance = view.templateInstance()
+    atts = instance.data.atts
+
+    selected = instance.selectedItems.get()
+
+    if atts.multiple
+      return selected.map (item) -> item.value
+    else
+      return _.first(selected)?.value
   valueConverters:
     'number': AutoForm.Utility.stringToNumber
     'numberArray': (val) ->
