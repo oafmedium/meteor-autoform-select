@@ -1,3 +1,69 @@
+class OafSelect
+  constructor: (@instance) ->
+    @searchValue = new ReactiveVar()
+    @selectedItems = new ReactiveVar []
+    @dropdownItems = new ReactiveVar []
+    @showDropdown = new ReactiveVar false
+
+  setShowDropdown: (value) ->
+    check value, Boolean
+    @showDropdown.set value
+
+  getShowDropdown: ->
+    thisContainer = $(@instance.firstNode)
+    visible = @showDropdown.get()
+
+    self = this
+    checkForHide = (event) ->
+      target = $(event.target)
+      container = target.closest '.oafselect-container'
+      return if container.is thisContainer
+      self.setShowDropdown false
+
+    if visible
+      $(window).on 'click.oafselect', checkForHide
+    else
+      $(window).off 'click.oafselect'
+    return visible
+
+  getDropdownItems: ->
+    searchValue = @getSearchValue()
+    selected = @getSelectedItems()
+    selectedIds = selected.map (item) -> item.value
+
+    options = _.reject @instance.data.selectOptions, (option) ->
+      option.value in selectedIds
+    _.filter options, (option) ->
+      return true unless searchValue?
+      searchValueEscaped = searchValue.replace /[|\\{}()[\]^$+*?.]/g, '\\$&'
+      regex = new RegExp searchValueEscaped, 'i'
+      option.label.match regex
+
+  getSelectedItems: ->
+    @selectedItems.get()
+
+  setSearchValue: (value) ->
+    check value, String
+    @searchValue.set value
+  getSearchValue: ->
+    @searchValue.get()
+
+  selectItem: (item) ->
+    @setSearchValue ''
+    current = @selectedItems.get()
+    current = [] unless @instance.data.atts?.multiple
+    current.push item
+    @selectedItems.set current
+
+  unselectItem: (value) ->
+    items = @selectedItems.get()
+    if value
+      items = _.reject items, (item) -> item.value is value
+    else
+      items.pop()
+
+    @selectedItems.set items
+
 AutoForm.addInputType 'oafSelect',
   template: 'afOafSelect'
   valueOut: ->
@@ -34,50 +100,67 @@ AutoForm.addInputType 'oafSelect',
         )
       val
   contextAdjust: (context) ->
-    context
+    # build items list
+    context.items = _.map(context.selectOptions, (opt) ->
+      if opt.optgroup
+        subItems = _.map(opt.options, (subOpt) ->
+          {
+            name: context.name
+            label: subOpt.label
+            value: subOpt.value
+            htmlAtts: _.omit(subOpt, 'label', 'value')
+            _id: subOpt.value
+            selected: _.contains(context.value, subOpt.value)
+            atts: context.atts
+          }
+        )
+        {
+          optgroup: opt.optgroup
+          items: subItems
+        }
+      else
+        {
+          name: context.name
+          label: opt.label
+          value: opt.value
+          htmlAtts: _.omit(opt, 'label', 'value')
+          _id: opt.value
+          selected: _.contains(context.value, opt.value)
+          atts: context.atts
+        }
+    )
+    return context
 
 Template.afOafSelect.events
   'keydown input.oafselect-input': (event, template) ->
     if event.keyCode in [9, 27]
-      template.showDropdown.set false
+      template.oafSelect.setShowDropdown false
 
     if event.keyCode is 8 and $(event.target).val() is ''
-      items = template.selectedItems.get()
-      items.pop()
-      template.selectedItems.set items
+      template.oafSelect.unselectItem()
 
   'keyup input.oafselect-input': (event, template) ->
-    template.searchValue.set $(event.target).val()
+    template.oafSelect.setSearchValue $(event.target).val()
   'focus input.oafselect-input': (event, template) ->
-    template.showDropdown.set true
+    template.oafSelect.setShowDropdown true
   'click .oafselect-input-wrapper': (event, template) ->
     template.$('input.oafselect-input').focus()
 
   'click .oafselect-selected-item .remove': (event, template) ->
     event.preventDefault()
     target = $(event.target).closest '.oafselect-selected-item'
-
-    items = template.selectedItems.get()
-    template.selectedItems.set _.reject items, (item) ->
-      item.value is target.attr('data-value')
+    template.oafSelect.unselectItem target.attr('data-value')
   'click .oafselect-dropdown-item': (event, template) ->
-    current = template.selectedItems.get()
-    atts = template.data.atts
-    current = [] unless atts.multiple
-    current.push
+    template.oafSelect.selectItem
       label: $(event.currentTarget).attr 'data-label'
       value: $(event.currentTarget).attr 'data-value'
-    template.selectedItems.set current
 
 Template.afOafSelect.helpers
   atts: ->
-    atts = _.clone @atts
-    delete atts.oafSelectOptions
-
-    return atts
+    _.omit @atts, 'oafSelectOptions'
   searchValue: ->
     instance = Template.instance()
-    instance?.searchValue.get()
+    instance?.oafSelect.getSearchValue()
   options: ->
     options = _.clone @atts?.oafSelectOptions
     return unless options?
@@ -85,42 +168,15 @@ Template.afOafSelect.helpers
     return options
   dropdownItems: ->
     instance = Template.instance()
-    return unless instance?
-
-    searchValue = instance.searchValue.get()
-    selected = instance.selectedItems.get()
-    selectedIds = selected.map (item) -> item.value
-
-    options = _.reject @selectOptions, (option) -> option.value in selectedIds
-    _.filter options, (option) ->
-      return true unless searchValue?
-      searchValueEscaped = searchValue.replace /[|\\{}()[\]^$+*?.]/g, '\\$&'
-      regex = new RegExp searchValueEscaped, 'i'
-      option.label.match regex
+    instance?.oafSelect.getDropdownItems()
   selectedItems: ->
     instance = Template.instance()
-    instance?.selectedItems.get()
+    instance?.oafSelect.getSelectedItems()
   showDropdown: ->
     instance = Template.instance()
-    thisContainer = $(instance.firstNode)
-
-    visible = instance?.showDropdown.get()
-
-    checkForHide = (event) ->
-      target = $(event.target)
-      container = target.closest '.oafselect-container'
-      return if container.is thisContainer
-      instance.showDropdown.set false
-
-    if visible
-      $(window).on 'click.oafselect', checkForHide
-    else
-      $(window).off 'click.oafselect'
-    return visible
+    instance?.oafSelect.getShowDropdown()
 
 Template.afOafSelect.onCreated ->
-  @searchValue = new ReactiveVar()
-  @selectedItems = new ReactiveVar []
-  @showDropdown = new ReactiveVar false
+  @oafSelect = new OafSelect this
 Template.afOafSelect.onRendered ->
 Template.afOafSelect.onDestroyed ->
