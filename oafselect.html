@@ -4,7 +4,7 @@
       {{#each selectedItems}}
         <div class="oafselect-selected-item" data-label="{{label}}" data-value="{{value}}">
           {{#if options.templates.selectedItem}}
-            {{> UI.dynamic template=template data=this}}
+            {{> UI.dynamic template=options.templates.selectedItem data=this}}
           {{else}}
             <span class="name">{{label}}</span> <a href="" class="remove">&times;</a>
           {{/if}}
@@ -14,13 +14,32 @@
     </div>
     <div class="oafselect-dropdown {{#if showDropdown}}visible{{/if}}">
       {{#each dropdownItems}}
-        <div class="oafselect-dropdown-item" data-label="{{label}}" data-value="{{value}}">
-          {{#if options.templates.dropdownItem}}
-            {{> UI.dynamic template=template data=this}}
-          {{else}}
-            <span class="name">{{label}}</span>
-          {{/if}}
-        </div>
+        {{#if this.optgroup}}
+          <div class="oafselect-dropdown-group">
+            {{#if options.templates.dropdownGroup}}
+              {{> UI.dynamic template=options.templates.dropdownGroup data=this}}
+            {{else}}
+              <div class="group name">{{this.optgroup}}</div>
+              {{#each this.items}}
+                <div class="oafselect-dropdown-item" data-label="{{label}}" data-value="{{value}}">
+                  {{#if options.templates.dropdownItem}}
+                    {{> UI.dynamic template=options.templates.dropdownItem data=this}}
+                  {{else}}
+                    <span class="name">{{label}}</span>
+                  {{/if}}
+                </div>
+              {{/each}}
+            {{/if}}
+          </div>
+        {{else}}
+          <div class="oafselect-dropdown-item" data-label="{{label}}" data-value="{{value}}">
+            {{#if options.templates.dropdownItem}}
+              {{> UI.dynamic template=options.templates.dropdownItem data=this}}
+            {{else}}
+              <span class="name">{{label}}</span>
+            {{/if}}
+          </div>
+        {{/if}}
       {{/each}}
       {{#if options.create}}
         {{#if searchValue}}
