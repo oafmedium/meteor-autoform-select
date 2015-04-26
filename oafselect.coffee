@@ -71,7 +71,7 @@ AutoForm.addInputType 'oafSelect',
     instance = view.templateInstance()
     atts = instance.data.atts
 
-    selected = instance.selectedItems.get()
+    selected = instance.oafSelect.getSelectedItems()
 
     if atts.multiple
       return selected.map (item) -> item.value
