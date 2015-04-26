@@ -48,11 +48,14 @@ class OafSelect
   getSearchValue: ->
     @searchValue.get()
 
-  selectItem: (item) ->
+  selectItem: (value) ->
     @setSearchValue ''
+    items = @getDropdownItems()
+
     current = @selectedItems.get()
     current = [] unless @instance.data.atts?.multiple
-    current.push item
+    item = _.find items, (item) -> item.value is value
+    current.push item if item?
     @selectedItems.set current
 
   unselectItem: (value) ->
@@ -151,9 +154,7 @@ Template.afOafSelect.events
     target = $(event.target).closest '.oafselect-selected-item'
     template.oafSelect.unselectItem target.attr('data-value')
   'click .oafselect-dropdown-item': (event, template) ->
-    template.oafSelect.selectItem
-      label: $(event.currentTarget).attr 'data-label'
-      value: $(event.currentTarget).attr 'data-value'
+    template.oafSelect.selectItem $(event.currentTarget).attr 'data-value'
 
 Template.afOafSelect.helpers
   atts: ->
