@@ -21,7 +21,7 @@
             {{else}}
               <div class="group name">{{this.optgroup}}</div>
               {{#each this.items}}
-                <div class="oafselect-dropdown-item" data-label="{{label}}" data-value="{{value}}">
+                <div class="oafselect-dropdown-item {{#if indexMatch}}active{{/if}}" data-label="{{label}}" data-value="{{value}}">
                   {{#if options.templates.dropdownItem}}
                     {{> UI.dynamic template=options.templates.dropdownItem data=this}}
                   {{else}}
@@ -32,7 +32,7 @@
             {{/if}}
           </div>
         {{else}}
-          <div class="oafselect-dropdown-item" data-label="{{label}}" data-value="{{value}}">
+          <div class="oafselect-dropdown-item {{#if indexMatch}}active{{/if}}" data-label="{{label}}" data-value="{{value}}">
             {{#if options.templates.dropdownItem}}
               {{> UI.dynamic template=options.templates.dropdownItem data=this}}
             {{else}}
