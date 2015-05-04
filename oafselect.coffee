@@ -28,6 +28,11 @@ class OafSelect
     return visible
 
   getDropdownItems: ->
+    firstrun = !@firstrun?
+    @firstrun = true
+
+    @selectItem @instance.data.atts?.value if firstrun
+
     searchValue = @getSearchValue()
     selected = @getSelectedItems()
     selectedIds = selected.map (item) -> item.value
@@ -58,8 +63,7 @@ class OafSelect
     current = [] unless @instance.data.atts?.multiple
     for item in items when item.value is value
       current.push item
-
-    @selectedItems.set current
+      return @selectedItems.set current
 
   unselectItem: (value) ->
     items = @selectedItems.get()
@@ -119,54 +123,40 @@ AutoForm.addInputType 'oafSelect',
     'number': AutoForm.Utility.stringToNumber
     'numberArray': (val) ->
       if _.isArray(val)
-        return _.map(val, (item) ->
-          AutoForm.Utility.stringToNumber $.trim(item)
-        )
-      val
+        return val.map (item) -> AutoForm.Utility.stringToNumber $.trim(item)
+      return val
     'boolean': AutoForm.Utility.stringToBool
     'booleanArray': (val) ->
       if _.isArray(val)
-        return _.map(val, (item) ->
-          AutoForm.Utility.stringToBool $.trim(item)
-        )
-      val
+        return val.map (item) -> AutoForm.Utility.stringToBool $.trim(item)
+      return val
     'date': AutoForm.Utility.stringToDate
     'dateArray': (val) ->
       if _.isArray(val)
-        return _.map(val, (item) ->
-          AutoForm.Utility.stringToDate $.trim(item)
-        )
-      val
+        return map val.map (item) -> AutoForm.Utility.stringToDate $.trim(item)
+      return val
   contextAdjust: (context) ->
     # build items list
-    context.items = _.map(context.selectOptions, (opt) ->
+    context.items = context.selectOptions.map (opt) ->
       if opt.optgroup
-        subItems = _.map(opt.options, (subOpt) ->
-          {
-            name: context.name
-            label: subOpt.label
-            value: subOpt.value
-            htmlAtts: _.omit(subOpt, 'label', 'value')
-            _id: subOpt.value
-            selected: _.contains(context.value, subOpt.value)
-            atts: context.atts
-          }
-        )
-        {
-          optgroup: opt.optgroup
-          items: subItems
-        }
-      else
-        {
+        subItems = opt.options.map (subOpt) ->
           name: context.name
-          label: opt.label
-          value: opt.value
-          htmlAtts: _.omit(opt, 'label', 'value')
-          _id: opt.value
-          selected: _.contains(context.value, opt.value)
+          label: subOpt.label
+          value: subOpt.value
+          htmlAtts: _.omit(subOpt, 'label', 'value')
+          _id: subOpt.value
+          selected: _.contains(context.value, subOpt.value)
           atts: context.atts
-        }
-    )
+        optgroup: opt.optgroup
+        items: subItems
+      else
+        name: context.name
+        label: opt.label
+        value: opt.value
+        htmlAtts: _.omit(opt, 'label', 'value')
+        _id: opt.value
+        selected: _.contains(context.value, opt.value)
+        atts: context.atts
     return context
 
 Template.afOafSelect.events
@@ -202,8 +192,10 @@ Template.afOafSelect.events
     event.preventDefault()
     target = $(event.target).closest '.oafselect-selected-item'
     template.oafSelect.unselectItem target.attr('data-value')
+    template.$('input.oafselect-input').focus()
   'click .oafselect-dropdown-item': (event, template) ->
     template.oafSelect.selectItem $(event.currentTarget).attr 'data-value'
+    template.$('input.oafselect-input').focus()
 
 Template.afOafSelect.helpers
   atts: ->
