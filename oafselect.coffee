@@ -1,9 +1,27 @@
+class BlurActive
+  @add: (element, namespace, callback) ->
+    active = null
+
+    $(document).on "mousedown.#{namespace}", (event) ->
+      active = $(event.target).get(0)
+
+    $(document).on "keydown.#{namespace}", (event) ->
+      active = $(event.target).get(0)
+
+    $(element).on "blur.#{namespace}", (event) ->
+      event.active = active
+      callback.call @, event
+
+  @remove: (element, namespace) ->
+    $(document).off "mousedown.#{namespace}"
+    $(document).off "keydown.#{namespace}"
+    $(element).off "blur.#{namespace}"
+
 class OafSelect
   constructor: (@instance) ->
     @searchValue = new ReactiveVar()
     @index = new ReactiveVar 0
     @selectedItems = new ReactiveVar []
-    @dropdownItems = new ReactiveVar []
     @showDropdown = new ReactiveVar false
 
   setShowDropdown: (value) ->
@@ -16,15 +34,19 @@ class OafSelect
 
     self = this
     checkForHide = (event) ->
-      target = $(event.target)
+      target = $(event.active)
       container = target.closest '.oafselect-container'
       return if container.is thisContainer
       self.setShowDropdown false
 
+    return visible unless @instance.firstNode?
+
+    BlurActive.remove @instance.$('input.oafselect-input'), 'oafselect'
     if visible
-      $(window).on 'click.oafselect', checkForHide
-    else
-      $(window).off 'click.oafselect'
+      BlurActive.add @instance.$('input.oafselect-input'),
+        'oafselect',
+        checkForHide
+
     return visible
 
   getDropdownItems: ->
@@ -37,13 +59,28 @@ class OafSelect
     selected = @getSelectedItems()
     selectedIds = selected.map (item) -> item.value
 
-    options = _.reject @instance.data.selectOptions, (option) ->
+    # deep clone options
+    options = _.values $.extend(true, {}, @instance.data.selectOptions)
+
+    options = _.reject options, (option) ->
+      if option.options?
+        option.options = _.reject option.options, (sub) ->
+          sub.value in selectedIds
+        return option.options.length <= 0
       option.value in selectedIds
-    _.filter options, (option) ->
+
+    searchOptions = (option) ->
       return true unless searchValue?
+      return true if searchValue is ''
       searchValueEscaped = searchValue.replace /[|\\{}()[\]^$+*?.]/g, '\\$&'
       regex = new RegExp searchValueEscaped, 'i'
-      option.label.match regex
+      if option.options?
+        option.options = _.filter option.options, searchOptions
+        return true if option.options.length > 0
+      else if option.label?
+        option.label.match regex
+
+    _.filter options, searchOptions
 
   getSelectedItems: ->
     @selectedItems.get()
@@ -56,6 +93,7 @@ class OafSelect
     @searchValue.get()
 
   selectItem: (value) ->
+    return unless value?
     @setSearchValue ''
     items = @getFlatItems()
 
@@ -63,7 +101,8 @@ class OafSelect
     current = [] unless @instance.data.atts?.multiple
     for item in items when item.value is value
       current.push item
-      return @selectedItems.set current
+      @selectedItems.set current
+      return $(@instance.firstNode).find('select').trigger 'change'
 
   unselectItem: (value) ->
     items = @selectedItems.get()
@@ -73,6 +112,7 @@ class OafSelect
       items.pop()
 
     @selectedItems.set items
+    $(@instance.firstNode).find('select').trigger 'change'
 
   getIndex: ->
     @index.get()
@@ -95,8 +135,8 @@ class OafSelect
     items = @getDropdownItems()
 
     items.forEach (root) ->
-      if root.optgroup
-        root.items.forEach (child) ->
+      if root.options?
+        root.options.forEach (child) ->
           newItems.push _.extend child, optgroup: root.label
       else
         newItems.push root
@@ -116,9 +156,9 @@ AutoForm.addInputType 'oafSelect',
     selected = instance.oafSelect.getSelectedItems()
 
     if atts.multiple
-      return selected.map (item) -> item.value
+      selected.map (item) -> item.value
     else
-      return _.first(selected)?.value
+      _.first(selected)?.value
   valueConverters:
     'number': AutoForm.Utility.stringToNumber
     'numberArray': (val) ->
@@ -137,7 +177,7 @@ AutoForm.addInputType 'oafSelect',
       return val
   contextAdjust: (context) ->
     # build items list
-    context.items = context.selectOptions.map (opt) ->
+    context.items = context.selectOptions?.map (opt) ->
       if opt.optgroup
         subItems = opt.options.map (subOpt) ->
           name: context.name
@@ -183,23 +223,36 @@ Template.afOafSelect.events
   'keyup input.oafselect-input': (event, template) ->
     return if event.keyCode in [9, 27, 38, 40]
     template.oafSelect.setSearchValue $(event.target).val()
+
   'focus input.oafselect-input': (event, template) ->
     template.oafSelect.setShowDropdown true
+
   'click .oafselect-input-wrapper': (event, template) ->
     template.$('input.oafselect-input').focus()
 
   'click .oafselect-selected-item .remove': (event, template) ->
     event.preventDefault()
+    event.stopPropagation()
     target = $(event.target).closest '.oafselect-selected-item'
     template.oafSelect.unselectItem target.attr('data-value')
     template.$('input.oafselect-input').focus()
+
+  'mouseover .oafselect-dropdown-item': (event, template) ->
+    target = $(event.target)
+    target = target.closest('[data-value]') unless target.is('[data-value]')
+    value = target.attr('data-value')
+    index = template.oafSelect.getItemIndex value
+    template.oafSelect.setIndex index
+
   'click .oafselect-dropdown-item': (event, template) ->
     template.oafSelect.selectItem $(event.currentTarget).attr 'data-value'
     template.$('input.oafselect-input').focus()
 
 Template.afOafSelect.helpers
   atts: ->
-    _.omit @atts, 'oafSelectOptions'
+    atts = _.omit @atts, 'oafSelectOptions'
+    atts = AutoForm.Utility.addClass atts, 'oafselect-container'
+
   searchValue: ->
     instance = Template.instance()
     instance?.oafSelect.getSearchValue()
@@ -214,6 +267,14 @@ Template.afOafSelect.helpers
   selectedItems: ->
     instance = Template.instance()
     instance?.oafSelect.getSelectedItems()
+  placeholder: ->
+    instance = Template.instance()
+    selected = instance?.oafSelect.getSelectedItems()
+    return if selected > 0
+    if typeof @atts.placeholder is 'function'
+      @atts.placeholder()
+    else
+      @atts.placeholder
   showDropdown: ->
     instance = Template.instance()
     instance?.oafSelect.getShowDropdown()
