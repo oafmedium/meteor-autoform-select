@@ -46,12 +46,10 @@
           </div>
         {{/if}}
       {{/each}}
-      {{#if options.create}}
-        {{#if searchValue}}
-          <div class="oafselect-dropdown-item create">
-            <span class="text">{{options.createText}}</span> <span class="value">{{searchValue}}</span>
-          </div>
-        {{/if}}
+      {{#if createText}}
+        <div class="oafselect-dropdown-item create">
+          <span class="text">{{createText}}</span>
+        </div>
       {{/if}}
     </div>
   </div>

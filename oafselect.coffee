@@ -1,9 +1,34 @@
-class OafSelect
+@OafSelect = class OafSelect
   constructor: (@instance) ->
     @searchValue = new ReactiveVar()
     @index = new ReactiveVar 0
     @selectedItems = new ReactiveVar []
     @showDropdown = new ReactiveVar false
+
+  getCreateText: ->
+    searchvalue = @getSearchValue()
+    createText = @instance.data.atts.oafSelectOptions.createText
+    return unless createText?
+    return if searchvalue? and searchvalue is ''
+
+    createText searchvalue
+
+  createItem: ->
+    searchvalue = @getSearchValue()
+    create = @instance.data.atts.oafSelectOptions.create
+    return unless create?
+    return if searchvalue? and searchvalue is ''
+
+    @setShowDropdown false
+
+    callback = (val) =>
+      @setSearchValue ''
+      Meteor.setTimeout =>
+        @selectItem val
+      , 25
+
+    value = create searchvalue, callback
+    callback value if value?
 
   setShowDropdown: (value) ->
     check value, Boolean

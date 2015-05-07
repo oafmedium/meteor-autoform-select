@@ -1,4 +1,4 @@
-class BlurActive
+@BlurActive = class BlurActive
   @add: (element, namespace, callback) ->
     active = null
 

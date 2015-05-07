@@ -47,6 +47,9 @@ Template.afOafSelect.events
     template.oafSelect.selectItem $(event.currentTarget).attr 'data-value'
     template.$('input.oafselect-input').focus()
 
+  'click .oafselect-dropdown-item.create': (event, template) ->
+    template.oafSelect.createItem()
+
 Template.afOafSelect.helpers
   atts: ->
     atts = _.omit @atts, 'oafSelectOptions'
@@ -66,6 +69,9 @@ Template.afOafSelect.helpers
   selectedItems: ->
     instance = Template.instance()
     instance?.oafSelect.getSelectedItems()
+  createText: ->
+    instance = Template.instance()
+    instance?.oafSelect.getCreateText()
   placeholder: ->
     instance = Template.instance()
     selected = instance?.oafSelect.getSelectedItems()
