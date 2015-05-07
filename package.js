@@ -19,8 +19,11 @@ Package.onUse(function(api) {
   api.use('blaze@2.0.0');
   api.use('aldeed:autoform@4.0.0 || 5.0.0');
   api.addFiles([
-    'oafselect.html',
+    'bluractive.coffee',
     'oafselect.coffee',
-    'oafselect.styl',
+    'afoafselect.html',
+    'afoafselect.coffee',
+    'afoafselect.styl',
+    'autoform.coffee',
   ],'client');
 });
