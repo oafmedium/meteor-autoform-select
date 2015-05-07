@@ -7,7 +7,7 @@ Package.describe({
   git: 'https://github.com/oafmedium/meteor-autoform-select',
   // By default, Meteor will default to using README.md for documentation.
   // To avoid submitting documentation, set this field to null.
-  // documentation: 'README.md'
+  documentation: null //'README.md'
 });
 
 Package.onUse(function(api) {
