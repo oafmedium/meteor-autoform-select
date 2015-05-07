@@ -116,11 +116,12 @@
     for item in items when item.value is value
       current.push item
       @selectedItems.set current
+      @setShowDropdown false
       return $(@instance.firstNode).find('select').trigger 'change'
 
   unselectItem: (value) ->
     items = @selectedItems.get()
-    if value
+    if value?
       items = _.reject items, (item) -> item.value is value
     else
       items.pop()
