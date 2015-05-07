@@ -5,6 +5,9 @@
     @selectedItems = new ReactiveVar []
     @showDropdown = new ReactiveVar false
 
+  getOptions: ->
+    @instance.data.atts.oafSelectOptions
+
   getCreateText: ->
     searchvalue = @getSearchValue()
     createText = @instance.data.atts.oafSelectOptions.createText

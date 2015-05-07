@@ -59,11 +59,9 @@ Template.afOafSelect.helpers
   searchValue: ->
     instance = Template.instance()
     instance?.oafSelect.getSearchValue()
-  options: ->
-    options = _.clone @atts?.oafSelectOptions
-    return unless options?
-    options.create = true if options.create?
-    return options
+  oafSelectOptions: ->
+    instance = Template.instance()
+    return instance.oafSelect.getOptions()
   dropdownItems: ->
     instance = Template.instance()
     instance?.oafSelect.getDropdownItems()
