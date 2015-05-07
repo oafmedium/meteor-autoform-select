@@ -64,7 +64,10 @@
     firstrun = !@firstrun?
     @firstrun = true
 
-    @selectItem @instance.data.atts?.value if firstrun
+    if firstrun
+      val = @instance.data.value
+      values = if val instanceof Array then val else [val]
+      @selectItem value for value in values
 
     searchValue = @getSearchValue()
     selected = @getSelectedItems()
