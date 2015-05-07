@@ -9,7 +9,8 @@
     searchvalue = @getSearchValue()
     createText = @instance.data.atts.oafSelectOptions.createText
     return unless createText?
-    return if searchvalue? and searchvalue is ''
+    return unless searchvalue?
+    return if searchvalue is ''
 
     createText searchvalue
 
@@ -17,7 +18,8 @@
     searchvalue = @getSearchValue()
     create = @instance.data.atts.oafSelectOptions.create
     return unless create?
-    return if searchvalue? and searchvalue is ''
+    return unless searchvalue?
+    return if searchvalue is ''
 
     @setShowDropdown false
 
@@ -25,7 +27,7 @@
       @setSearchValue ''
       Meteor.setTimeout =>
         @selectItem val
-      , 25
+      , 10
 
     value = create searchvalue, callback
     callback value if value?
@@ -124,11 +126,14 @@
     @index.get()
 
   setIndex: (value) ->
+    additional = 0
+    additional++ unless @getCreateText()?
+
     items = @getFlatItems()
-    if value+1 > items.length
+    if (value + additional) > items.length
       value = 0
     else if value < 0
-      value = items.length - 1
+      value = (items.length - additional)
 
     @index.set value
 
@@ -150,4 +155,6 @@
     return newItems
 
   getItemIndex: (value) ->
-    return index for item, index in @getFlatItems() when item.value is value
+    items = @getFlatItems()
+    return items.length unless value? and value isnt ''
+    return index for item, index in items when item.value is value

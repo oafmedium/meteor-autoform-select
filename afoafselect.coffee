@@ -14,10 +14,11 @@ Template.afOafSelect.events
 
     if event.keyCode is 13
       event.preventDefault()
-      index = template.oafSelect.getIndex()
-      item = template.oafSelect.getItemAtIndex index
-      return unless item?
-      template.oafSelect.selectItem item.value
+      template.$('.oafselect-dropdown-item.active').trigger 'click'
+
+    dropdown = template.$('.oafselect-dropdown')
+    top = dropdown.find('.active').position()?.top
+    dropdown.scrollTop top + dropdown.scrollTop() if top?
 
   'keyup input.oafselect-input': (event, template) ->
     return if event.keyCode in [9, 27, 38, 40]
