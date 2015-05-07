@@ -5,7 +5,7 @@
         <option selected="selected" value="{{this.value}}">{{this.label}}</option>
       {{/each}}
     </select>
-    <div class="oafselect-input-wrapper {{#if showDropdown}}dropdown-visible{{/if}}">
+    <div class="oafselect-input-wrapper {{#if showDropdown}}dropdown-visible{{/if}} {{#if focus}}focus{{/if}}">
       {{#each selectedItems}}
         <div class="oafselect-selected-item" data-label="{{label}}" data-value="{{value}}">
           {{#if oafSelectOptions.templates.selectedItem}}

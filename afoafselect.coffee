@@ -26,6 +26,10 @@ Template.afOafSelect.events
 
   'focus input.oafselect-input': (event, template) ->
     template.oafSelect.setShowDropdown true
+    template.focused.set true
+
+  'blur input.oafselect-input': (event, template) ->
+    template.focused.set false
 
   'click .oafselect-input-wrapper': (event, template) ->
     template.$('input.oafselect-input').focus()
@@ -92,8 +96,12 @@ Template.afOafSelect.helpers
     index = instance?.oafSelect.getIndex()
     itemIndex = instance?.oafSelect.getItemIndex @value
     index is itemIndex
+  focus: ->
+    instance = Template.instance()
+    instance?.focused.get()
 
 Template.afOafSelect.onCreated ->
   @oafSelect = new OafSelect this
+  @focused = new ReactiveVar false
 Template.afOafSelect.onRendered ->
 Template.afOafSelect.onDestroyed ->
