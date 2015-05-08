@@ -15,7 +15,7 @@
     return unless searchvalue?
     return if searchvalue is ''
 
-    createText searchvalue
+    createText.call @, searchvalue
 
   createItem: ->
     searchvalue = @getSearchValue()
@@ -32,7 +32,7 @@
         @selectItem val
       , 10
 
-    value = create searchvalue, callback
+    value = create.call @, searchvalue, callback
     callback value if value?
 
   setShowDropdown: (value) ->
