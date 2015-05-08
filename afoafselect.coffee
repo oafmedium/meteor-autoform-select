@@ -78,7 +78,7 @@ Template.afOafSelect.helpers
   placeholder: ->
     instance = Template.instance()
     selected = instance?.oafSelect.getSelectedItems()
-    return if selected > 0
+    return if selected.length > 0
     if typeof @atts.placeholder is 'function'
       @atts.placeholder()
     else
