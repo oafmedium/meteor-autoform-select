@@ -5,6 +5,15 @@
     @selectedItems = new ReactiveVar []
     @showDropdown = new ReactiveVar false
 
+  getControls: ->
+    container: @instance.$('.oafselect-container')
+    inputWrapper: @instance.$('.oafselect-input-wrapper')
+    selectedItems: @instance.$('.oafselect-selected-item')
+    input: @instance.$('.oafselect-input')
+    dropdown: @instance.$('.oafselect-dropdown')
+    dropdownGroups: @instance.$('.oafselect-dropdown-group')
+    dropdownItems: @instance.$('.oafselect-dropdown-item')
+
   getOptions: ->
     @instance.data.atts.oafSelectOptions or {}
 
