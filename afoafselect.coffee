@@ -60,9 +60,8 @@ Template.afOafSelect.events
 
 Template.afOafSelect.helpers
   atts: ->
-    atts = _.omit @atts, 'oafSelectOptions'
-    atts = AutoForm.Utility.addClass atts, 'oafselect-container'
-
+    instance = Template.instance()
+    instance?.oafSelect.getAtts()
   searchValue: ->
     instance = Template.instance()
     instance?.oafSelect.getSearchValue()

@@ -17,6 +17,11 @@
   getOptions: ->
     @instance.data.atts.oafSelectOptions or {}
 
+  getAtts: ->
+    atts = _.omit @instance.data.atts, 'oafSelectOptions'
+    atts = AutoForm.Utility.addClass atts, 'oafselect-container'
+    return atts
+
   getCreateText: ->
     searchvalue = @getSearchValue()
     createText = @getOptions().createText
