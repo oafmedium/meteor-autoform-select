@@ -149,7 +149,7 @@
     for item in items when item.value is value
       current.push item
       @selectedItems.set current
-      unless template.oafSelect.getAtts().multiple
+      unless @getAtts().multiple
         @setShowDropdown false
       return $(@instance.firstNode).find('select').trigger 'change'
 
