@@ -117,7 +117,7 @@
       limit = @getOptions().limitItems
       limitOptions = (option) ->
         overlimit = false
-        overlimit = true if count > limit
+        overlimit = true if count+1 > limit
         count++
 
         if option.options?
