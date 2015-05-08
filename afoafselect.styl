@@ -33,13 +33,14 @@
     z-index 1000
     &.visible
       display block
+      &:empty
+        display none
     .oafselect-dropdown-group
       &:before
         content ' '
         display block
         height 1px
         overflow hidden
-        background-color #e5e5e5
         margin 5px 0
         background-color rgba(0,0,0,0.06)
       .group.name

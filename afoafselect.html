@@ -5,7 +5,7 @@
         <option selected="selected" value="{{this.value}}">{{this.label}}</option>
       {{/each}}
     </select>
-    <div class="oafselect-input-wrapper {{#if showDropdown}}dropdown-visible{{/if}} {{#if focus}}focus{{/if}}">
+    <div class="oafselect-input-wrapper {{#if showDropdown}}dropdown-visible {{#unless dropdownItems}}{{#unless createText}}no-options{{/unless}}{{/unless}}{{/if}} {{#if focus}}focus{{/if}}">
       {{#each selectedItems}}
         <div class="oafselect-selected-item" data-label="{{label}}" data-value="{{value}}">
           {{#if oafSelectOptions.templates.selectedItem}}
@@ -20,8 +20,7 @@
       {{/each}}
       <input type="text" class="oafselect-input" value="{{searchValue}}" placeholder="{{placeholder}}" />
     </div>
-    <div class="oafselect-dropdown {{#if showDropdown}}visible{{/if}}">
-      {{#each dropdownItems}}
+    <div class="oafselect-dropdown {{#if showDropdown}}visible{{/if}}">{{#each dropdownItems}}
         {{#if this.options}}
           <div class="oafselect-dropdown-group">
             {{#if oafSelectOptions.templates.dropdownGroup}}
@@ -48,12 +47,10 @@
             {{/if}}
           </div>
         {{/if}}
-      {{/each}}
-      {{#if createText}}
+      {{/each}}{{#if createText}}
         <div class="oafselect-dropdown-item create {{#if indexMatch}}active{{/if}}">
           <span class="text">{{createText}}</span>
         </div>
-      {{/if}}
-    </div>
+      {{/if}}</div>
   </div>
 </template>
