@@ -51,6 +51,10 @@
 
   setShowDropdown: (value) ->
     check value, Boolean
+    return if @showDropdown.get() is value
+    if value and not @getAtts().multiple
+      @unselectItem()
+
     @showDropdown.set value
 
   getShowDropdown: ->
@@ -145,11 +149,13 @@
     for item in items when item.value is value
       current.push item
       @selectedItems.set current
-      @setShowDropdown false
+      unless template.oafSelect.getAtts().multiple
+        @setShowDropdown false
       return $(@instance.firstNode).find('select').trigger 'change'
 
   unselectItem: (value) ->
     items = @selectedItems.get()
+    return unless items.length > 0
     if value?
       items = _.reject items, (item) -> item.value is value
     else
