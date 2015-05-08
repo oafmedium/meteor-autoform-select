@@ -6,11 +6,11 @@
     @showDropdown = new ReactiveVar false
 
   getOptions: ->
-    @instance.data.atts.oafSelectOptions
+    @instance.data.atts.oafSelectOptions or {}
 
   getCreateText: ->
     searchvalue = @getSearchValue()
-    createText = @instance.data.atts.oafSelectOptions.createText
+    createText = @getOptions().createText
     return unless createText?
     return unless searchvalue?
     return if searchvalue is ''
@@ -19,7 +19,7 @@
 
   createItem: ->
     searchvalue = @getSearchValue()
-    create = @instance.data.atts.oafSelectOptions.create
+    create = @getOptions().create
     return unless create?
     return unless searchvalue?
     return if searchvalue is ''
