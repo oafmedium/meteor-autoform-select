@@ -102,8 +102,21 @@
         return true if option.options.length > 0
       else if option.label?
         option.label.match regex
+    options = _.filter options, searchOptions
+    if @getOptions().limitItems > 0
+      count = 0
+      limit = @getOptions().limitItems
+      limitOptions = (option) ->
+        overlimit = false
+        overlimit = true if count > limit
+        count++
 
-    _.filter options, searchOptions
+        if option.options?
+          count--
+          option.options = _.filter option.options, limitOptions
+        return !overlimit
+      options = _.filter options, limitOptions
+    return options
 
   getSelectedItems: ->
     @selectedItems.get()
@@ -117,6 +130,8 @@
 
   selectItem: (value) ->
     return unless value?
+    return if value is ''
+
     @setSearchValue ''
     items = @getFlatItems()
 
