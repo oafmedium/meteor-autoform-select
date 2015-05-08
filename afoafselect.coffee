@@ -111,4 +111,54 @@ Template.afOafSelect.onCreated ->
   @oafSelect = new OafSelect this
   @focused = new ReactiveVar false
 Template.afOafSelect.onRendered ->
+  transferStyles = ($from, $to, properties) ->
+    styles = {}
+    if properties
+      for prop, i in properties
+        styles[properties[i]] = $from.css prop
+    else
+      styles = $from.css()
+    $to.css styles
+
+  measureString = (str, $parent) ->
+    return 0 unless str
+    $test = $('<test>').css
+      position: 'absolute'
+      top: -99999
+      left: -99999
+      width: 'auto'
+      padding: 0
+      whiteSpace: 'pre'
+    $test.text(str).appendTo('body')
+    transferStyles $parent, $test, [
+      'letterSpacing'
+      'fontSize'
+      'fontFamily'
+      'fontWeight'
+      'textTransform'
+    ]
+    width = $test.width()
+    $test.remove()
+    width
+
+  @$('.oafselect-input').each ->
+    $input = $(this)
+    $input.css
+      'max-width': $input.parent().width()
+    currentWidth = null
+
+    update = ->
+      value = $input.val()
+      placeholder = $input.attr('placeholder')
+      if not value and placeholder
+        value = placeholder
+
+      width = measureString(value, $input) + 15
+      if width isnt currentWidth
+        currentWidth = width
+        $input.width width
+        $input.trigger 'resize'
+
+    $input.on 'keydown keyup update blur', update
+
 Template.afOafSelect.onDestroyed ->
