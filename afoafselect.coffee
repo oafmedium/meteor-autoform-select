@@ -42,14 +42,18 @@ Template.afOafSelect.events
     template.$('input.oafselect-input').focus()
 
   'mouseover .oafselect-dropdown-item': (event, template) ->
-    Meteor.clearTimeout template.hoverTimeout
-    template.hoverTimeout = Meteor.setTimeout ->
+    updateActive = ->
       target = $(event.target)
       target = target.closest('[data-value]') unless target.is('[data-value]')
       value = target.attr('data-value')
       index = template.oafSelect.getItemIndex value
       template.oafSelect.setIndex index
-    , 125
+
+    if template.oafSelect.getOptions().throttling
+      Meteor.clearTimeout template.hoverTimeout
+      template.hoverTimeout = Meteor.setTimeout updateActive, 125
+    else
+      updateActive()
 
   'click .oafselect-dropdown-item': (event, template) ->
     template.oafSelect.selectItem $(event.currentTarget).attr 'data-value'
