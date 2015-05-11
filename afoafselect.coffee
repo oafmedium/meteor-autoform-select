@@ -111,6 +111,8 @@ Template.afOafSelect.onCreated ->
   @oafSelect = new OafSelect this
   @focused = new ReactiveVar false
 Template.afOafSelect.onRendered ->
+  instance = this
+
   transferStyles = ($from, $to, properties) ->
     styles = {}
     if properties
@@ -159,6 +161,9 @@ Template.afOafSelect.onRendered ->
         $input.width width
         $input.trigger 'resize'
 
-    $input.on 'keydown keyup update blur', update
+    $input.on 'keydown keyup update blur focus click', update
+    instance.autorun ->
+      items = instance.oafSelect.getSelectedItems()
+      Meteor.setTimeout update, 100
 
 Template.afOafSelect.onDestroyed ->
