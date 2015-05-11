@@ -44,7 +44,7 @@
       @setSearchValue ''
       Meteor.setTimeout =>
         @selectItem val
-      , 10
+      , 150
 
     value = create.call @, searchvalue, callback
     callback value if value?
@@ -142,7 +142,7 @@
     return if value is ''
 
     @setSearchValue ''
-    items = @getFlatItems()
+    items = @getFlatItems true
 
     current = @selectedItems.get()
     current = [] unless @instance.data.atts?.multiple
@@ -183,9 +183,12 @@
     items = @getFlatItems()
     return items[index]
 
-  getFlatItems: ->
+  getFlatItems: (all) ->
     newItems = []
-    items = @getDropdownItems()
+    if all
+      items = @instance.data.selectOptions
+    else
+      items = @getDropdownItems()
 
     items.forEach (root) ->
       if root.options?
