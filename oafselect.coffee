@@ -149,7 +149,7 @@
     for item in items when item.value is value
       current.push item
       @selectedItems.set current
-      unless @getAtts().multiple
+      if not @getAtts().multiple or @getOptions().autoclose
         @setShowDropdown false
       return $(@instance.firstNode).find('select').trigger 'change'
 

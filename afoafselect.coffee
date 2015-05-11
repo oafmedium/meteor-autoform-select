@@ -57,7 +57,8 @@ Template.afOafSelect.events
 
   'click .oafselect-dropdown-item': (event, template) ->
     template.oafSelect.selectItem $(event.currentTarget).attr 'data-value'
-    if template.oafSelect.getAtts().multiple
+    if template.oafSelect.getAtts().multiple and
+    not template.oafSelect.getOptions().autoclose
       template.$('input.oafselect-input').focus()
 
   'click .oafselect-dropdown-item.create': (event, template) ->
