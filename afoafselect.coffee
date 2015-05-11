@@ -146,8 +146,6 @@ Template.afOafSelect.onRendered ->
 
   @$('.oafselect-input').each ->
     $input = $(this)
-    $input.css
-      'max-width': $input.parent().width()
     currentWidth = null
 
     update = ->
@@ -160,9 +158,12 @@ Template.afOafSelect.onRendered ->
       if width isnt currentWidth
         currentWidth = width
         $input.width width
+        $input.css 'max-width': $input.parent().width()
         $input.trigger 'resize'
 
     $input.on 'keydown keyup update blur focus click', update
+    update()
+
     instance.autorun ->
       items = instance.oafSelect.getSelectedItems()
       Meteor.setTimeout update, 100
