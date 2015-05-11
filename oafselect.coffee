@@ -186,7 +186,7 @@
   getFlatItems: (all) ->
     newItems = []
     if all
-      items = @instance.data.selectOptions
+      items = @instance.data.selectOptions or []
     else
       items = @getDropdownItems()
 
