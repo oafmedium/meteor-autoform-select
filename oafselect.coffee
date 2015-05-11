@@ -6,7 +6,7 @@
     @showDropdown = new ReactiveVar false
 
   getControls: ->
-    container: @instance.$('.oafselect-container')
+    container: @instance.$('div.oafselect-container')
     inputWrapper: @instance.$('.oafselect-input-wrapper')
     selectedItems: @instance.$('.oafselect-selected-item')
     input: @instance.$('.oafselect-input')
