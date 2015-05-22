@@ -39,7 +39,9 @@ Template.afOafSelect.events
     event.stopPropagation()
     target = $(event.target).closest '.oafselect-selected-item'
     template.oafSelect.unselectItem target.attr('data-value')
-    template.$('input.oafselect-input').focus()
+    if template.oafSelect.getAtts().multiple and
+    not template.oafSelect.getOptions().autoclose
+      template.$('input.oafselect-input').focus()
 
   'mouseover .oafselect-dropdown-item': (event, template) ->
     updateActive = ->
