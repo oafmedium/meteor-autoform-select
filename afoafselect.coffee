@@ -156,6 +156,7 @@ Template.afOafSelect.onRendered ->
       $input.css
         'max-width': $input.parent().width()
         'width': measureString(value, $input) + 15
+        'box-sizing': 'content-box'
       $input.trigger 'resize'
 
     $input.on 'keydown keyup update blur focus click', update
