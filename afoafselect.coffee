@@ -151,15 +151,12 @@ Template.afOafSelect.onRendered ->
     update = ->
       value = $input.val()
       placeholder = $input.attr('placeholder')
-      if not value and placeholder
-        value = placeholder
+      value = placeholder if not value and placeholder
 
-      width = measureString(value, $input) + 15
-      if width isnt currentWidth
-        currentWidth = width
-        $input.width width
-        $input.css 'max-width': $input.parent().width()
-        $input.trigger 'resize'
+      $input.css
+        'max-width': $input.parent().width()
+        'width': measureString(value, $input) + 15
+      $input.trigger 'resize'
 
     $input.on 'keydown keyup update blur focus click', update
     update()
