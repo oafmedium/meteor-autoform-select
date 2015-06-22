@@ -27,9 +27,10 @@ Posts.attachSchema
           label: tag.name
           value: tag._id
       oafSelectOptions:
-        create: ->
-          console.log @, arguments
-        createText: 'add '
+        create: (value) ->
+          value: Tags.insert name: value
+          label: value
+        createText: (value) -> "add #{value}"
 
 # if Meteor.isServer
 #   Meteor.startup ->
