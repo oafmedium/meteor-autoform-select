@@ -20,7 +20,8 @@
       {{/each}}
       <input type="text" class="oafselect-input" value="{{searchValue}}" placeholder="{{placeholder}}" />
     </div>
-    <div class="oafselect-dropdown {{#if showDropdown}}visible{{/if}}">{{#each dropdownItems}}
+    {{#if showDropdown}}
+      <div class="oafselect-dropdown">{{#each dropdownItems}}
         {{#if this.options}}
           <div class="oafselect-dropdown-group">
             {{#if oafSelectOptions.templates.dropdownGroup}}
@@ -52,5 +53,6 @@
           <span class="text">{{createText}}</span>
         </div>
       {{/if}}</div>
+    {{/if}}
   </div>
 </template>

@@ -24,7 +24,6 @@
       margin 0
       outline 0
   .oafselect-dropdown
-    display none
     position absolute
     background-color #fefefe
     width 100%
@@ -36,10 +35,8 @@
     border-top-left-radius 0
     border-top-right-radius 0
     z-index 1000
-    &.visible
-      display block
-      &:empty
-        display none
+    &:empty
+      display none
     .oafselect-dropdown-group
       &:first-of-type:before
         display none
