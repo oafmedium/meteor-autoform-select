@@ -20,37 +20,39 @@
       {{/each}}
       <input type="text" class="oafselect-input" value="{{searchValue}}" placeholder="{{placeholder}}" />
     </div>
-    <div class="oafselect-dropdown {{#if showDropdown}}visible{{/if}}">{{#each dropdownItems}}
-        {{#if this.options}}
-          <div class="oafselect-dropdown-group">
-            {{#if oafSelectOptions.templates.dropdownGroup}}
-              {{> UI.dynamic template=oafSelectOptions.templates.dropdownGroup data=this}}
-            {{else}}
-              <div class="group name">{{this.optgroup}}</div>
-              {{#each this.options}}
-                <div class="oafselect-dropdown-item {{#if indexMatch}}active{{/if}}" data-label="{{label}}" data-value="{{value}}">
-                  {{#if oafSelectOptions.templates.dropdownItem}}
-                    {{> UI.dynamic template=oafSelectOptions.templates.dropdownItem data=this}}
-                  {{else}}
-                    <span class="name">{{label}}</span>
-                  {{/if}}
-                </div>
-              {{/each}}
-            {{/if}}
+    {{#if showDropdown}}
+      <div class="oafselect-dropdown visible">{{#each dropdownItems}}
+          {{#if this.options}}
+            <div class="oafselect-dropdown-group">
+              {{#if oafSelectOptions.templates.dropdownGroup}}
+                {{> UI.dynamic template=oafSelectOptions.templates.dropdownGroup data=this}}
+              {{else}}
+                <div class="group name">{{this.optgroup}}</div>
+                {{#each this.options}}
+                  <div class="oafselect-dropdown-item {{#if indexMatch}}active{{/if}}" data-label="{{label}}" data-value="{{value}}">
+                    {{#if oafSelectOptions.templates.dropdownItem}}
+                      {{> UI.dynamic template=oafSelectOptions.templates.dropdownItem data=this}}
+                    {{else}}
+                      <span class="name">{{label}}</span>
+                    {{/if}}
+                  </div>
+                {{/each}}
+              {{/if}}
+            </div>
+          {{else}}
+            <div class="oafselect-dropdown-item {{#if indexMatch}}active{{/if}}" data-label="{{label}}" data-value="{{value}}">
+              {{#if oafSelectOptions.templates.dropdownItem}}
+                {{> UI.dynamic template=oafSelectOptions.templates.dropdownItem data=this}}
+              {{else}}
+                <span class="name">{{label}}</span>
+              {{/if}}
+            </div>
+          {{/if}}
+        {{/each}}{{#if createText}}
+          <div class="oafselect-dropdown-item create {{#if indexMatch}}active{{/if}}">
+            <span class="text">{{createText}}</span>
           </div>
-        {{else}}
-          <div class="oafselect-dropdown-item {{#if indexMatch}}active{{/if}}" data-label="{{label}}" data-value="{{value}}">
-            {{#if oafSelectOptions.templates.dropdownItem}}
-              {{> UI.dynamic template=oafSelectOptions.templates.dropdownItem data=this}}
-            {{else}}
-              <span class="name">{{label}}</span>
-            {{/if}}
-          </div>
-        {{/if}}
-      {{/each}}{{#if createText}}
-        <div class="oafselect-dropdown-item create {{#if indexMatch}}active{{/if}}">
-          <span class="text">{{createText}}</span>
-        </div>
-      {{/if}}</div>
+        {{/if}}</div>
+    {{/if}}
   </div>
 </template>
