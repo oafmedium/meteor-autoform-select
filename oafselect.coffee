@@ -133,7 +133,13 @@
           option.options = _.filter option.options, limitOptions
         return !overlimit
       options = _.filter options, limitOptions
-    return options
+    return @addIndexToOptions options
+
+  addIndexToOptions: (options) ->
+    index = 0
+    options.map (opt) ->
+      opt._index = index++
+      return opt
 
   getSelectedItems: ->
     @selectedItems.get()
@@ -208,9 +214,4 @@
       else
         newItems.push root
 
-    return newItems
-
-  getItemIndex: (value) ->
-    items = @getFlatItems()
-    return items.length unless value? and value isnt ''
-    return index for item, index in items when item.value is value
+    return @addIndexToOptions newItems

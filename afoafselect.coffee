@@ -44,11 +44,11 @@ Template.afOafSelect.events
       template.$('input.oafselect-input').focus()
 
   'mouseover .oafselect-dropdown-item': (event, template) ->
+    index = @_index
     updateActive = ->
       target = $(event.target)
       target = target.closest('[data-value]') unless target.is('[data-value]')
       value = target.attr('data-value')
-      index = template.oafSelect.getItemIndex value
       template.oafSelect.setIndex index
 
     if template.oafSelect.getOptions().throttling
@@ -96,16 +96,12 @@ Template.afOafSelect.helpers
   showDropdown: ->
     instance = Template.instance()
     instance?.oafSelect.getShowDropdown()
-  itemIndex: ->
-    instance = Template.instance()
-    instance?.oafSelect.getItemIndex @value
   indexMatch: ->
     instance = Template.instance()
     return unless instance?.oafSelect.getShowDropdown()
 
     index = instance?.oafSelect.getIndex()
-    itemIndex = instance?.oafSelect.getItemIndex @value
-    index is itemIndex
+    index is @_index
   focus: ->
     instance = Template.instance()
     instance?.focused.get()
