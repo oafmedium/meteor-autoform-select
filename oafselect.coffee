@@ -92,8 +92,17 @@
     selectedIds = selected.map (item) -> item.value
 
     if @getOptions().autocomplete?
-      return [] unless searchValue? and searchValue isnt ''
-      if @getOptions().autocompleteStartLimit?
+      showall = false
+      if @getOptions().autocompleteShowAll?
+        if typeof @getOptions().autocompleteShowAll is 'function'
+          showall = @getOptions().autocompleteShowAll()
+        else
+          showall = @getOptions().autocompleteShowAll
+
+      return [] unless (searchValue? and searchValue isnt '') or showall
+      # return [] unless searchValue? and searchValue isnt ''
+
+      if not showall and @getOptions().autocompleteStartLimit?
         return [] if searchValue.length < @getOptions().autocompleteStartLimit
       options = @getOptions().autocomplete searchValue
     else
