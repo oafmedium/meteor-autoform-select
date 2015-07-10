@@ -91,8 +91,14 @@
     selected = @getSelectedItems()
     selectedIds = selected.map (item) -> item.value
 
-    # deep clone options
-    options = _.values $.extend(true, {}, @instance.data.selectOptions)
+    if @getOptions().autocomplete?
+      return [] unless searchValue? and searchValue isnt ''
+      if @getOptions().autocompleteStartLimit?
+        return [] if searchValue.length < @getOptions().autocompleteStartLimit
+      options = @getOptions().autocomplete searchValue
+    else
+      # deep clone options
+      options = _.values $.extend(true, {}, @instance.data.selectOptions)
 
     options = _.reject options, (option) ->
       if option.options?
@@ -101,17 +107,19 @@
         return option.options.length <= 0
       option.value in selectedIds
 
-    searchOptions = (option) ->
-      return true unless searchValue?
-      return true if searchValue is ''
-      searchValueEscaped = searchValue.replace /[|\\{}()[\]^$+*?.]/g, '\\$&'
-      regex = new RegExp searchValueEscaped, 'i'
-      if option.options?
-        option.options = _.filter option.options, searchOptions
-        return true if option.options.length > 0
-      else if option.label?
-        option.label.match regex
-    options = _.filter options, searchOptions
+    unless @getOptions().autocomplete?
+      searchOptions = (option) ->
+        return true unless searchValue?
+        return true if searchValue is ''
+        searchValueEscaped = searchValue.replace /[|\\{}()[\]^$+*?.]/g, '\\$&'
+        regex = new RegExp searchValueEscaped, 'i'
+        if option.options?
+          option.options = _.filter option.options, searchOptions
+          return true if option.options.length > 0
+        else if option.label?
+          option.label.match regex
+      options = _.filter options, searchOptions
+
     if @getOptions().limitItems > 0
       count = 0
       limit = @getOptions().limitItems
@@ -186,7 +194,10 @@
   getFlatItems: (all) ->
     newItems = []
     if all
-      items = @instance.data.selectOptions or []
+      if @getOptions().autocomplete?
+        items = @getOptions().autocomplete()
+      else
+        items = @instance.data.selectOptions or []
     else
       items = @getDropdownItems()
 
