@@ -142,6 +142,22 @@ Template.afOafSelect.onRendered ->
     $test.remove()
     width
 
+  fixMaxHeight = ->
+    $('.oafselect-dropdown').each ->
+      parent = $(this)._oafScrollParent()
+      parentHeight = parent.height()
+      parentTop = parent.offset().top
+      topOffset = $(this).offset().top - parentTop
+
+      $(this).css
+        'max-height': parentHeight - topOffset - 10
+
+  @autorun =>
+    @oafSelect.getShowDropdown() # reactivity
+    fixMaxHeight()
+
+  $(window).resize fixMaxHeight
+
   @$('.oafselect-input').each ->
     $input = $(this)
     currentWidth = null
