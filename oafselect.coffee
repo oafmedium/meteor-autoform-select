@@ -5,6 +5,14 @@
     @selectedItems = new ReactiveVar []
     @showDropdown = new ReactiveVar false
 
+    firstrun = !@firstrun?
+    @firstrun = true
+
+    if firstrun
+      val = @instance.data.value
+      values = if val instanceof Array then val else [val]
+      @selectItem value for value in values
+
   getControls: ->
     container: @instance.$('div.oafselect-container')
     inputWrapper: @instance.$('.oafselect-input-wrapper')
@@ -79,14 +87,6 @@
     return visible
 
   getDropdownItems: ->
-    firstrun = !@firstrun?
-    @firstrun = true
-
-    if firstrun
-      val = @instance.data.value
-      values = if val instanceof Array then val else [val]
-      @selectItem value for value in values
-
     searchValue = @getSearchValue()
     selected = @getSelectedItems()
     selectedIds = selected.map (item) -> item.value
