@@ -16,6 +16,9 @@ Template.afOafSelect.events
       event.preventDefault()
       template.$('.oafselect-dropdown-item.active').trigger 'click'
 
+    if event.keyCode is 9 and template.oafSelect.getOptions().selectOnTab
+      template.$('.oafselect-dropdown-item.active').trigger 'click'
+
     dropdown = template.$('.oafselect-dropdown')
     top = dropdown.find('.active').position()?.top
     dropdown.scrollTop top + dropdown.scrollTop() if top?
