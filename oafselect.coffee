@@ -4,6 +4,7 @@
     @index = new ReactiveVar 0
     @selectedItems = new ReactiveVar []
     @showDropdown = new ReactiveVar false
+    @instanceId = "oafselect-#{Meteor.uuid()}"
 
     firstrun = !@firstrun?
     @firstrun = true
@@ -78,10 +79,10 @@
 
     return visible unless @instance.firstNode?
 
-    BlurActive.remove @instance.$('input.oafselect-input'), 'oafselect'
+    BlurActive.remove @instance.$('input.oafselect-input'), @instanceId
     if visible
       BlurActive.add @instance.$('input.oafselect-input'),
-        'oafselect',
+        @instanceId,
         checkForHide
 
     return visible
