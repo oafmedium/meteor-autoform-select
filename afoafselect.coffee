@@ -148,6 +148,7 @@ Template.afOafSelect.onRendered ->
   fixMaxHeight = ->
     $('.oafselect-dropdown').each ->
       parent = $(this)._oafScrollParent()
+      return unless parent.offset()
       parentHeight = parent.height()
       parentTop = parent.offset().top
       topOffset = $(this).offset().top - parentTop
