@@ -1,6 +1,6 @@
 Package.describe({
   name: 'oaf:autoform-select',
-  version: '0.3.7',
+  version: '0.4.6',
   // Brief, one-line summary of the package.
   summary: 'Provides a better select input for autoform',
   // URL to the Git repository containing the source code for this package.
@@ -19,6 +19,7 @@ Package.onUse(function(api) {
   api.use('blaze@2.0.0');
   api.use('aldeed:autoform@4.0.0 || 5.0.0');
   api.addFiles([
+    'jquery.scrollparent.js',
     'bluractive.coffee',
     'oafselect.coffee',
     'afoafselect.html',

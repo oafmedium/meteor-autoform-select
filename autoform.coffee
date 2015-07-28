@@ -8,9 +8,12 @@ AutoForm.addInputType 'oafSelect',
     selected = instance.oafSelect.getSelectedItems()
 
     if atts.multiple
-      selected.map (item) -> item.value
+      val = selected.map (item) -> item.value
     else
-      _.first(selected)?.value
+      val = _.first(selected)?.value
+
+    val = "" unless val?
+    return val
   valueConverters:
     'number': AutoForm.Utility.stringToNumber
     'numberArray': (val) ->

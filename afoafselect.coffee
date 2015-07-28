@@ -16,6 +16,9 @@ Template.afOafSelect.events
       event.preventDefault()
       template.$('.oafselect-dropdown-item.active').trigger 'click'
 
+    if event.keyCode is 9 and template.oafSelect.getOptions().selectOnTab
+      template.$('.oafselect-dropdown-item.active').trigger 'click'
+
     dropdown = template.$('.oafselect-dropdown')
     top = dropdown.find('.active').position()?.top
     dropdown.scrollTop top + dropdown.scrollTop() if top?
@@ -44,11 +47,11 @@ Template.afOafSelect.events
       template.$('input.oafselect-input').focus()
 
   'mouseover .oafselect-dropdown-item': (event, template) ->
+    index = @_index
     updateActive = ->
       target = $(event.target)
       target = target.closest('[data-value]') unless target.is('[data-value]')
       value = target.attr('data-value')
-      index = template.oafSelect.getItemIndex value
       template.oafSelect.setIndex index
 
     if template.oafSelect.getOptions().throttling
@@ -96,16 +99,12 @@ Template.afOafSelect.helpers
   showDropdown: ->
     instance = Template.instance()
     instance?.oafSelect.getShowDropdown()
-  itemIndex: ->
-    instance = Template.instance()
-    instance?.oafSelect.getItemIndex @value
   indexMatch: ->
     instance = Template.instance()
     return unless instance?.oafSelect.getShowDropdown()
 
     index = instance?.oafSelect.getIndex()
-    itemIndex = instance?.oafSelect.getItemIndex @value
-    index is itemIndex
+    index is @_index
   focus: ->
     instance = Template.instance()
     instance?.focused.get()
@@ -145,6 +144,23 @@ Template.afOafSelect.onRendered ->
     width = $test.width()
     $test.remove()
     width
+
+  fixMaxHeight = ->
+    $('.oafselect-dropdown').each ->
+      parent = $(this)._oafScrollParent()
+      return unless parent.offset()
+      parentHeight = parent.height()
+      parentTop = parent.offset().top
+      topOffset = $(this).offset().top - parentTop
+
+      $(this).css
+        'max-height': parentHeight - topOffset - 10
+
+  @autorun =>
+    @oafSelect.getShowDropdown() # reactivity
+    fixMaxHeight()
+
+  $(window).resize fixMaxHeight
 
   @$('.oafselect-input').each ->
     $input = $(this)
