@@ -62,12 +62,16 @@ Template.afOafSelect.events
 
   'click .oafselect-dropdown-item': (event, template) ->
     template.oafSelect.selectItem $(event.currentTarget).attr 'data-value'
+    template.$('input.oafselect-input').val template.oafSelect.getSearchValue()
+
     if template.oafSelect.getAtts().multiple and
     not template.oafSelect.getOptions().autoclose
       template.$('input.oafselect-input').focus()
 
   'click .oafselect-dropdown-item.create': (event, template) ->
-    template.oafSelect.createItem()
+    template.oafSelect.createItem ->
+      searchValue = template.oafSelect.getSearchValue()
+      template.$('input.oafselect-input').val searchValue
 
 Template.afOafSelect.helpers
   atts: ->

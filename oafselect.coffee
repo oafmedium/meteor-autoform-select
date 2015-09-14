@@ -40,7 +40,7 @@
 
     createText.call @, searchvalue
 
-  createItem: ->
+  createItem: (viewCallback) ->
     searchvalue = @getSearchValue()
     create = @getOptions().create
     return unless create?
@@ -53,6 +53,7 @@
       @setSearchValue ''
       Meteor.setTimeout =>
         @selectItem val
+        viewCallback() if viewCallback?
       , 150
 
     value = create.call @, searchvalue, callback
