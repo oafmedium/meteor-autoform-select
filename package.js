@@ -1,6 +1,6 @@
 Package.describe({
   name: 'oaf:autoform-select',
-  version: '0.4.9',
+  version: '0.4.10',
   // Brief, one-line summary of the package.
   summary: 'Provides a better select input for autoform',
   // URL to the Git repository containing the source code for this package.
@@ -13,7 +13,7 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.1.0.2');
   api.use('coffeescript');
-  api.use('stylus');
+  api.use('stylus@1.0.0 || 2.0.0');
   api.use('reactive-var');
   api.use('templating@1.0.0');
   api.use('blaze@2.0.0');
