@@ -72,7 +72,9 @@ Template.afOafSelect.events
     template.oafSelect.createItem ->
       searchValue = template.oafSelect.getSearchValue()
       template.$('input.oafselect-input').val searchValue
-      template.oafSelect.setShowDropdown true
+      if template.oafSelect.getAtts().multiple and
+      not template.oafSelect.getOptions().autoclose
+        template.oafSelect.setShowDropdown true
 
 Template.afOafSelect.helpers
   atts: ->
