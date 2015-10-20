@@ -5,15 +5,17 @@
     @selectedItems = new ReactiveVar []
     @showDropdown = new ReactiveVar false
     @instanceId = "oafselect-#{Meteor.uuid()}"
+    @data = new ReactiveVar @instance.data
 
-    firstrun = !@firstrun?
-    @firstrun = true
-
-    if firstrun
-      val = @instance.data.value
+    @instance.autorun =>
+      val = @data.get().value
       values = if val instanceof Array then val else [val]
-      @selectItem value for value in values
+      selected = Tracker.nonreactive =>
+        @getSelectedItems().map (item) -> item.value
 
+      return if _.isEqual selected, values
+      @selectItem value for value in values
+  updateData: (data) -> @data.set data
   getControls: ->
     container: @instance.$('div.oafselect-container')
     inputWrapper: @instance.$('.oafselect-input-wrapper')
@@ -24,10 +26,10 @@
     dropdownItems: @instance.$('.oafselect-dropdown-item')
 
   getOptions: ->
-    @instance.data.atts.oafSelectOptions or {}
+    @data.get().atts.oafSelectOptions or {}
 
   getAtts: ->
-    atts = _.omit @instance.data.atts, 'oafSelectOptions'
+    atts = _.omit @data.get().atts, 'oafSelectOptions'
     atts = AutoForm.Utility.addClass atts, 'oafselect-container'
     return atts
 
@@ -109,7 +111,7 @@
       options = @getOptions().autocomplete searchValue
     else
       # deep clone options
-      options = _.values $.extend(true, {}, @instance.data.selectOptions)
+      options = _.values $.extend(true, {}, @data.get().selectOptions)
 
     options = _.reject options, (option) ->
       if option.options?
@@ -170,7 +172,7 @@
     items = @getFlatItems true
 
     current = @selectedItems.get()
-    current = [] unless @instance.data.atts?.multiple
+    current = [] unless @data.get().atts?.multiple
     for item in items when item.value is value
       current.push item
       @selectedItems.set current
@@ -214,7 +216,7 @@
       if @getOptions().autocomplete?
         items = @getOptions().autocomplete()
       else
-        items = @instance.data.selectOptions or []
+        items = @data.get().selectOptions or []
     else
       items = @getDropdownItems()
 

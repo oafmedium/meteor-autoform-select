@@ -119,6 +119,8 @@ Template.afOafSelect.helpers
 Template.afOafSelect.onCreated ->
   @oafSelect = new OafSelect this
   @focused = new ReactiveVar false
+  @autorun =>
+    @oafSelect.updateData Template.currentData()
 Template.afOafSelect.onRendered ->
   instance = this
 

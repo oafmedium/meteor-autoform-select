@@ -1,6 +1,6 @@
 Package.describe({
   name: 'oaf:autoform-select',
-  version: '0.4.11',
+  version: '0.4.12',
   // Brief, one-line summary of the package.
   summary: 'Provides a better select input for autoform',
   // URL to the Git repository containing the source code for this package.
