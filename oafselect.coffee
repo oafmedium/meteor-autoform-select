@@ -6,16 +6,34 @@
     @showDropdown = new ReactiveVar false
     @instanceId = "oafselect-#{Meteor.uuid()}"
     @data = new ReactiveVar @instance.data
+    @changesTriggeredByUser = 0
 
     @instance.autorun =>
+      form = AutoForm.getCurrentDataForForm()
+      if form.autosave or form.autosaveOnKeyup
+        if @changesTriggeredByUser > 0
+          @changesTriggeredByUser--
+          return
+
+
       val = @data.get().value
       values = if val instanceof Array then val else [val]
+      values = _.union values
+
       selected = Tracker.nonreactive =>
         @getSelectedItems().map (item) -> item.value
 
-      return if _.isEqual selected, values
-      @selectItem value for value in values
+      newValues = _.difference _.without(values, ''), selected
+      removedValues = _.difference selected, _.without(values, '')
+
+      if @data.get().atts?.multiple
+        @updateSelectedItems newValues, removedValues
+      else
+        @selectItem newValues[0], false if newValues.length
+        @unselectItem removedValues[0], false if removedValues.length
+
   updateData: (data) -> @data.set data
+
   getControls: ->
     container: @instance.$('div.oafselect-container')
     inputWrapper: @instance.$('.oafselect-input-wrapper')
@@ -164,7 +182,7 @@
   getSearchValue: ->
     @searchValue.get()
 
-  selectItem: (value) ->
+  selectItem: (value, triggeredByUser = true) ->
     return unless value?
     return if value is ''
 
@@ -178,9 +196,10 @@
       @selectedItems.set current
       if not @getAtts().multiple or @getOptions().autoclose
         @setShowDropdown false
+      @changesTriggeredByUser++ if triggeredByUser
       return $(@instance.firstNode).find('select').trigger 'change'
 
-  unselectItem: (value) ->
+  unselectItem: (value, triggeredByUser = true) ->
     items = @selectedItems.get()
     return unless items.length > 0
     if value?
@@ -189,6 +208,22 @@
       items.pop()
 
     @selectedItems.set items
+    @changesTriggeredByUser++ if triggeredByUser
+    $(@instance.firstNode).find('select').trigger 'change'
+
+  updateSelectedItems: (newValues, removedValues) ->
+    return unless newValues.length or removedValues.length
+
+    current = Tracker.nonreactive => @selectedItems.get()
+
+    for value in removedValues
+      current = _.reject current, (item) -> item.value is value
+
+    items = Tracker.nonreactive => @getFlatItems true
+    for item in items when item.value in newValues
+      current.push item
+
+    @selectedItems.set current
     $(@instance.firstNode).find('select').trigger 'change'
 
   getIndex: ->
