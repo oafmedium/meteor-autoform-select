@@ -197,7 +197,9 @@
       if not @getAtts().multiple or @getOptions().autoclose
         @setShowDropdown false
       @changesTriggeredByUser++ if triggeredByUser
-      return $(@instance.firstNode).find('select').trigger 'change'
+      return Meteor.setTimeout =>
+        $(@instance.firstNode).find('select').trigger 'change'
+      , 1
 
   unselectItem: (value, triggeredByUser = true) ->
     items = @selectedItems.get()
@@ -224,7 +226,9 @@
       current.push item
 
     @selectedItems.set current
-    $(@instance.firstNode).find('select').trigger 'change'
+    Meteor.setTimeout =>
+      $(@instance.firstNode).find('select').trigger 'change'
+    , 1
 
   getIndex: ->
     @index.get()
