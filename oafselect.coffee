@@ -7,6 +7,7 @@
     @instanceId = "oafselect-#{Meteor.uuid()}"
     @data = new ReactiveVar @instance.data
     @changesTriggeredByUser = 0
+    @lastIndex = new ReactiveVar()
 
     @instance.autorun =>
       form = AutoForm.getCurrentDataForForm()
@@ -168,9 +169,11 @@
 
   addIndexToOptions: (options) ->
     index = 0
-    options.map (opt) ->
+    opts = options.map (opt) ->
       opt._index = index++
       return opt
+    @lastIndex.set index - 1
+    return opts
 
   getSelectedItems: ->
     @selectedItems.get()
@@ -234,14 +237,11 @@
     @index.get()
 
   setIndex: (value) ->
-    additional = 0
-    additional++ unless @getCreateText()?
+    lastIndex = @lastIndex.get()
+    lastIndex++ if @getCreateText()?
 
-    items = @getFlatItems()
-    if (value + additional) > items.length
-      value = 0
-    else if value < 0
-      value = (items.length - additional)
+    value = 0 if value > lastIndex
+    value = lastIndex if value < 0
 
     @index.set value
 
