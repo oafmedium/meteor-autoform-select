@@ -199,10 +199,18 @@
       @selectedItems.set current
       if not @getAtts().multiple or @getOptions().autoclose
         @setShowDropdown false
-      @changesTriggeredByUser++ if triggeredByUser
-      return Meteor.setTimeout =>
-        $(@instance.firstNode).find('select').trigger 'change'
-      , 1
+
+      form = AutoForm.getCurrentDataForForm()
+      if form.autosave or form.autosaveOnKeyup
+        @changesTriggeredByUser++ if triggeredByUser
+        Meteor.setTimeout ->
+          $("##{form.id}").submit()
+        , 1
+      else
+        Meteor.setTimeout =>
+          $(@instance.firstNode).find('select').trigger 'change'
+        , 1
+      return
 
   unselectItem: (value, triggeredByUser = true) ->
     items = @selectedItems.get()
@@ -213,8 +221,13 @@
       items.pop()
 
     @selectedItems.set items
-    @changesTriggeredByUser++ if triggeredByUser
-    $(@instance.firstNode).find('select').trigger 'change'
+
+    form = AutoForm.getCurrentDataForForm()
+    if form.autosave or form.autosaveOnKeyup
+      @changesTriggeredByUser++ if triggeredByUser
+      $("##{form.id}").submit()
+    else
+      $(@instance.firstNode).find('select').trigger 'change'
 
   updateSelectedItems: (newValues, removedValues) ->
     return unless newValues.length or removedValues.length
