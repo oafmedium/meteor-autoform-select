@@ -201,7 +201,7 @@
         @setShowDropdown false
 
       form = AutoForm.getCurrentDataForForm()
-      if form.autosave or form.autosaveOnKeyup
+      if form?.autosave or form?.autosaveOnKeyup
         @changesTriggeredByUser++ if triggeredByUser
         Meteor.setTimeout ->
           $("##{form.id}").submit()
@@ -223,7 +223,7 @@
     @selectedItems.set items
 
     form = AutoForm.getCurrentDataForForm()
-    if form.autosave or form.autosaveOnKeyup
+    if form?.autosave or form?.autosaveOnKeyup
       @changesTriggeredByUser++ if triggeredByUser
       $("##{form.id}").submit()
     else
