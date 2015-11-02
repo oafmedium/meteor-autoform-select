@@ -128,6 +128,11 @@ Template.afOafSelect.onCreated ->
 Template.afOafSelect.onRendered ->
   instance = this
 
+  @autorun =>
+    newValue = @oafSelect.searchValue.get()
+    return unless Tracker.nonreactive => @oafSelect.updateSearchValue.get()
+    @$('input.oafselect-input').val newValue
+
   transferStyles = ($from, $to, properties) ->
     styles = {}
     if properties

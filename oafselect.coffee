@@ -1,6 +1,7 @@
 @OafSelect = class OafSelect
   constructor: (@instance) ->
     @searchValue = new ReactiveVar()
+    @updateSearchValue = new ReactiveVar false
     @index = new ReactiveVar 0
     @selectedItems = new ReactiveVar []
     @showDropdown = new ReactiveVar false
@@ -71,6 +72,7 @@
     @setShowDropdown false
 
     callback = (val) =>
+      @updateSearchValue.set true
       @setSearchValue ''
       Meteor.setTimeout =>
         @selectItem val
@@ -189,6 +191,7 @@
     return unless value?
     return if value is ''
 
+    @updateSearchValue.set true
     @setSearchValue ''
     items = @getFlatItems true
 
