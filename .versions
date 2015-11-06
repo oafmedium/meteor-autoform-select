@@ -32,7 +32,7 @@ minifiers@1.1.7
 minimongo@1.0.10
 momentjs:moment@2.8.4
 mongo-id@1.0.1
-oaf:autoform-select@0.4.18
+oaf:autoform-select@0.4.19
 observe-sequence@1.0.7
 ordered-dict@1.0.4
 promise@0.5.1

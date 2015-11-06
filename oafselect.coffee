@@ -75,7 +75,7 @@
       Meteor.setTimeout =>
         @selectItem val
         viewCallback() if viewCallback?
-      , 1
+      , 100
 
     value = create.call @, searchvalue, callback
     callback value if value?
