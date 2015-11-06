@@ -126,6 +126,7 @@ Template.afOafSelect.onCreated ->
   @autorun =>
     @oafSelect.updateData Template.currentData()
 Template.afOafSelect.onRendered ->
+  @oafSelect.formId = AutoForm.getFormId()
   instance = this
 
   @autorun =>

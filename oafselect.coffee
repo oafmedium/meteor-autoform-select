@@ -11,7 +11,7 @@
     @lastIndex = new ReactiveVar()
 
     @instance.autorun =>
-      form = AutoForm.getCurrentDataForForm()
+      form = AutoForm.getCurrentDataForForm(@formId)
       if form.autosave or form.autosaveOnKeyup
         if @changesTriggeredByUser > 0
           @changesTriggeredByUser--
@@ -72,12 +72,10 @@
     @setShowDropdown false
 
     callback = (val) =>
-      @updateSearchValue.set true
-      @setSearchValue ''
       Meteor.setTimeout =>
         @selectItem val
         viewCallback() if viewCallback?
-      , 150
+      , 1
 
     value = create.call @, searchvalue, callback
     callback value if value?
@@ -203,7 +201,7 @@
       if not @getAtts().multiple or @getOptions().autoclose
         @setShowDropdown false
 
-      form = AutoForm.getCurrentDataForForm()
+      form = AutoForm.getCurrentDataForForm(@formId)
       if form?.autosave or form?.autosaveOnKeyup
         @changesTriggeredByUser++ if triggeredByUser
         Meteor.setTimeout ->
@@ -225,7 +223,7 @@
 
     @selectedItems.set items
 
-    form = AutoForm.getCurrentDataForForm()
+    form = AutoForm.getCurrentDataForForm(@formId)
     if form?.autosave or form?.autosaveOnKeyup
       @changesTriggeredByUser++ if triggeredByUser
       $("##{form.id}").submit()
