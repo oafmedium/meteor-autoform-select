@@ -21,7 +21,7 @@
       <input type="text" class="oafselect-input" value="" placeholder="{{placeholder}}" />
     </div>
     {{#if showDropdown}}
-      <div class="oafselect-dropdown visible">{{#each dropdownItems}}
+      <div class="oafselect-dropdown visible">{{#if Template.subscriptionsReady}}{{#each dropdownItems}}
           {{#if this.options}}
             <div class="oafselect-dropdown-group">
               {{#if oafSelectOptions.templates.dropdownGroup}}
@@ -52,7 +52,13 @@
           <div class="oafselect-dropdown-item create {{#if indexMatch}}active{{/if}}">
             <span class="text">{{createText}}</span>
           </div>
-        {{/if}}</div>
+        {{/if}}{{else}}{{#if oafSelectOptions.templates.loading}}
+          {{> UI.dynamic template=oafSelectOptions.templates.loading data=this}}
+        {{else}}
+          <div class="oafselect-dropdown-item">
+            <span class="name">loading …</span>
+          </div>
+        {{/if}}{{/if}}</div>
     {{/if}}
   </div>
 </template>

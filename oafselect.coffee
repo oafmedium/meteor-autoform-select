@@ -9,6 +9,10 @@
     @data = new ReactiveVar @instance.data
     @changesTriggeredByUser = 0
     @lastIndex = new ReactiveVar()
+    @subscribe = (args...) => @instance.subscribe args...
+    @autorun = (fn) => @instance.autorun fn
+
+
 
     @instance.autorun =>
       if @changesTriggeredByUser > 0
@@ -66,8 +70,6 @@
     return unless searchvalue?
     return if searchvalue is ''
 
-    @setShowDropdown false
-
     callback = (val) =>
       Tracker.autorun (computation) =>
         return unless val in _.pluck @getFlatItems(true), 'value'
@@ -77,6 +79,7 @@
 
     value = create.call @, searchvalue, callback
     callback value if value?
+    @setShowDropdown false
 
   setShowDropdown: (value) ->
     check value, Boolean
@@ -125,7 +128,7 @@
 
       if not showall and @getOptions().autocompleteStartLimit?
         return [] if searchValue.length < @getOptions().autocompleteStartLimit
-      options = @getOptions().autocomplete searchValue
+      options = @getOptions().autocomplete.call this, searchValue
     else
       # deep clone options
       options = _.values $.extend(true, {}, @data.get().selectOptions)
@@ -266,7 +269,7 @@
     newItems = []
     if all
       if @getOptions().autocomplete?
-        items = @getOptions().autocomplete()
+        items = @getOptions().autocomplete.call this
       else
         items = @data.get().selectOptions or []
     else
