@@ -5,7 +5,7 @@
     @index = new ReactiveVar 0
     @selectedItems = new ReactiveVar []
     @showDropdown = new ReactiveVar false
-    @instanceId = "oafselect-#{Meteor.uuid()}"
+    @instanceId = "oafselect-#{Random.id()}"
     @data = new ReactiveVar @instance.data
     @changesTriggeredByUser = 0
     @lastIndex = new ReactiveVar()
