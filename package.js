@@ -13,7 +13,6 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.1.0.2');
   api.use('coffeescript');
-  api.use('stylus@1.0.0 || 2.0.0');
   api.use('reactive-var');
   api.use('templating@1.0.0');
   api.use('blaze@2.0.0');
@@ -24,7 +23,7 @@ Package.onUse(function(api) {
     'oafselect.coffee',
     'afoafselect.html',
     'afoafselect.coffee',
-    'afoafselect.styl',
+    'afoafselect.css',
     'autoform.coffee',
   ],'client');
 });
